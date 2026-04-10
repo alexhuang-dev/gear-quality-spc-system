@@ -1,8 +1,26 @@
 # 齿轮质量 SPC 系统
 
+![Python](https://img.shields.io/badge/Python-Production-blue)
+![FastAPI](https://img.shields.io/badge/API-FastAPI-009688)
+![LangGraph](https://img.shields.io/badge/流程编排-LangGraph-black)
+![Langflow Optional](https://img.shields.io/badge/Langflow-可选-orange)
+![Status](https://img.shields.io/badge/状态-生产导向-success)
+
 [English](README.md)
 
 这是一个面向生产场景的齿轮质量分析系统，用来把齿轮检测 CSV 数据真正变成可运行、可追踪、可验证的质量分析流程。系统核心基于**确定性 Python 计算**，外层结合 `LangGraph` 编排、`FastAPI` 服务、`Harness` 机器校验、图表报告，以及可选的 `Langflow` 展示入口。
+
+## 这个项目厉害在哪
+
+- 它没有把关键质量数值交给大模型“猜”
+- 它把确定性计算和自然语言表达明确拆开了
+- 它把 Langflow 放在展示层，而不是放在事实来源层
+- 它同时具备历史记忆、Harness 校验、图表、报告和告警接口
+- 它的结构更像可部署工程，而不是一次性 demo
+
+## 一句话介绍
+
+这是一个把齿轮检测 CSV 数据转成确定性 SPC 结果、历史对比、可校验报告和运维输出的工业质量分析系统。
 
 ## 项目定位
 
@@ -153,3 +171,5 @@ docker compose -f docker-compose.production.yml up --build -d
 - `PRODUCTION_DEPLOYMENT.md`
 - `FINAL_ARCHITECTURE.md`
 - `langflow_integration/SETUP.md`
+- `PROJECT_INTRO_BILINGUAL.md`
+- `INTERVIEW_GUIDE.zh-CN.md`

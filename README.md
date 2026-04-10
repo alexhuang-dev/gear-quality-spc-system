@@ -1,8 +1,26 @@
 # Gear Quality SPC System
 
+![Python](https://img.shields.io/badge/Python-Production-blue)
+![FastAPI](https://img.shields.io/badge/API-FastAPI-009688)
+![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-black)
+![Langflow Optional](https://img.shields.io/badge/Langflow-Optional-orange)
+![Status](https://img.shields.io/badge/Status-Private%20Production--Style-success)
+
 [中文说明](README.zh-CN.md)
 
 A production-oriented gear quality analysis system for industrial SPC workflows, built with deterministic Python computation, LangGraph orchestration, FastAPI services, machine-checkable harness evaluation, reporting, and an optional Langflow presentation layer.
+
+## Why This Project Stands Out
+
+- It does not let LLMs invent core quality numbers
+- It separates deterministic computation from narrative explanation
+- It keeps Langflow as an optional showcase layer instead of a hard dependency
+- It includes harness validation, historical memory, charts, reports, and alert plumbing in one system
+- It is structured like a deployable engineering system, not a single demo notebook
+
+## One-Line Pitch
+
+An industrial-grade gear quality analysis system that turns raw inspection CSVs into deterministic SPC results, historical comparisons, validated reports, and operational outputs.
 
 ## Overview
 
@@ -146,3 +164,5 @@ The software architecture is production-oriented, but actual deployment still de
 - `PRODUCTION_DEPLOYMENT.md`
 - `FINAL_ARCHITECTURE.md`
 - `langflow_integration/SETUP.md`
+- `PROJECT_INTRO_BILINGUAL.md`
+- `INTERVIEW_GUIDE.zh-CN.md`
