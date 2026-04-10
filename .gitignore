@@ -1,0 +1,33 @@
+.venv/
+.tmp/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+data/reports/
+data/harness_failures/
+data/processed/
+data/failed_inputs/
+data/incoming/
+data/*.db
+data/*.sqlite
+
+gear_quality_outputs/
+gear_quality_review_outputs/
+*.sqlite
+*.db
+
+New Flow - optimized*.json
+New Flow - v4 final-core.json
+New Flow - v5 final-architecture.json
+New Flow - v9 api-frontend.json
+New Flow - v9.1 api-frontend-fixed.json
+New Flow - v9.2 api-frontend-prompt-merge.json
+generate_v4_flow.py
+generate_v5_final_architecture.py
+generate_v8_final_package_flow.py
+generate_v9_2_api_prompt_flow.py
+generate_v9_api_frontend_flow.py
+gear_quality/

@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pandas
+numpy
+requests
+langgraph
+pytest
+weasyprint
+streamlit
+langfuse
+apscheduler
+python-multipart
