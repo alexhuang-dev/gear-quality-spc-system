@@ -1,19 +1,36 @@
 # Gear Quality SPC System
 
-A production-oriented gear quality analysis system built around deterministic SPC computation, LangGraph orchestration, FastAPI services, Langflow presentation, and harness-based machine validation.
+[中文说明](README.zh-CN.md)
 
-## What this project does
+A production-oriented gear quality analysis system for industrial SPC workflows, built with deterministic Python computation, LangGraph orchestration, FastAPI services, machine-checkable harness evaluation, reporting, and an optional Langflow presentation layer.
+
+## Overview
+
+This project is designed to make gear inspection data operational instead of static. It takes CSV-based inspection results, computes SPC metrics deterministically, compares runs against historical batches, generates reports and charts, and produces a harness evaluation layer that checks whether the final output is internally consistent.
+
+The core production path is **pure Python**:
+
+- `FastAPI` for service exposure
+- `LangGraph` for orchestration, with deterministic fallback
+- `SQLite` for history persistence
+- `Streamlit` for dashboard visibility
+- `pytest` + golden cases for regression checks
+
+`Langflow` is **optional**. It is included as a visual presentation and demo entry, not as the system of record.
+
+## What This Project Does
 
 - Parses gear inspection CSV data
-- Computes SPC statistics deterministically
+- Computes SPC metrics deterministically
 - Evaluates Western Electric 8 rules
-- Persists history in SQLite for cross-run comparison
-- Generates JSON, HTML, and SVG reporting artifacts
+- Persists run history in SQLite
+- Compares current batches against previous runs
+- Generates JSON, HTML, SVG, and optional PDF outputs
 - Produces machine-checkable harness evaluation results
-- Supports alert payload generation for webhook delivery
-- Exposes a FastAPI backend for Langflow and other clients
-- Provides a Streamlit dashboard for recent run visibility
-- Supports automatic folder-based CSV processing
+- Builds alert payloads for webhook delivery
+- Exposes a backend API for Langflow or other clients
+- Provides a Streamlit dashboard for operational visibility
+- Supports automatic folder-based CSV ingestion
 
 ## Architecture
 
@@ -29,14 +46,24 @@ tests/                 unit tests and golden-case regression tests
 data/specs/            default specification configuration
 ```
 
-## Final Langflow entry
+## Runtime Modes
 
-- Flow file: `New Flow - v9.3 api-frontend-prompt-merge-friendly.json`
-- Custom component: `langflow_integration/gear_spc_component.py`
+### 1. Pure Python Production Mode
 
-Langflow is the presentation layer. The FastAPI backend is the source of truth.
+Use the backend directly through FastAPI, the dashboard, and the auto-runner.
 
-## Main runtime features
+This is the recommended deployment mode for real engineering use.
+
+### 2. Langflow Showcase Mode
+
+Use:
+
+- `New Flow - v9.3 api-frontend-prompt-merge-friendly.json`
+- `langflow_integration/gear_spc_component.py`
+
+In this mode, Langflow is the presentation layer. The backend API remains the source of truth.
+
+## Main Features
 
 - Deterministic SPC engine
 - Historical comparison across runs
@@ -44,12 +71,13 @@ Langflow is the presentation layer. The FastAPI backend is the source of truth.
 - Harness validation with regression endpoint
 - HTML report with embedded charts and plain-language summary
 - Optional PDF generation
+- Alert payload generation and webhook testing
 - Dashboard summary endpoint
 - Incoming CSV watcher
 - Docker deployment skeleton
 - Windows startup scripts
 
-## Quick start
+## Quick Start
 
 ### Local
 
@@ -72,7 +100,7 @@ cp .env.example .env
 docker compose -f docker-compose.production.yml up --build -d
 ```
 
-## API endpoints
+## API Endpoints
 
 - `GET /health`
 - `GET /ready`
@@ -85,20 +113,35 @@ docker compose -f docker-compose.production.yml up --build -d
 - `POST /regression`
 - `POST /alerts/test`
 
-## Test
+## Testing
 
 ```powershell
 .\.venv\Scripts\python -m pytest tests -q
 ```
 
-## Notes before real factory deployment
+## FAQ
 
-- Specification limits must be replaced with real process standards
-- Webhook URLs must be configured for real alert delivery
-- Langfuse keys are optional and only needed if observability is enabled
-- MES/ERP/PLC integration is project-specific and not bundled here
+### Is this a pure Python system?
 
-## Additional docs
+Yes for the production backend.
+
+The core system can run without Langflow. The production stack is Python-based and includes FastAPI, LangGraph, SQLite, Streamlit, and the harness/test layer.
+
+### Does it require Langflow?
+
+No.
+
+Langflow is optional and mainly useful for demos, workflows, and visual presentation. If Langflow is removed, the backend still works.
+
+### Is it ready for a real factory?
+
+The software architecture is production-oriented, but actual deployment still depends on:
+
+- Real specification limits
+- Real webhook configuration
+- Real MES/ERP/PLC integration requirements
+
+## Additional Docs
 
 - `PRODUCTION_DEPLOYMENT.md`
 - `FINAL_ARCHITECTURE.md`
