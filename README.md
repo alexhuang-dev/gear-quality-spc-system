@@ -10,11 +10,33 @@ Gear Quality SPC System is a production-oriented backend for gear inspection qua
 
 What makes it different from a generic "AI workflow" project is the boundary it draws: the numbers live in code, while language-facing layers sit on top. Langflow is supported as a visual entry, but the system is designed to run without it.
 
-![Architecture Overview](docs/assets/architecture-overview.svg)
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    A["CSV input / spec overrides"] --> B["Deterministic SPC core<br/>Cp / Cpk / limits / rules"]
+    B --> C["LangGraph orchestration<br/>history / alert / artifacts / harness"]
+    C --> D["FastAPI service"]
+    C --> E["SQLite history"]
+    C --> F["Reports & charts<br/>JSON / HTML / SVG / PDF"]
+    C --> G["Harness validation"]
+    D --> H["Streamlit dashboard"]
+    D --> I["Optional Langflow front-end"]
+```
 
 ## Why You Might Care
 
 If you are trying to turn inspection spreadsheets into something closer to an engineering system, this project is the middle ground between a one-off script and a full factory platform. It gives you deterministic SPC computation, traceable history, machine-checkable validation, and deployable service interfaces in one place.
+
+## Technical Strengths
+
+| Area | What is implemented | Why it matters |
+|---|---|---|
+| Deterministic computation | SPC metrics, control limits, historical deltas, and status grading are computed in Python | Core quality facts stay stable and auditable |
+| Historical memory | SQLite-backed run storage and cross-run comparison | The system can say how the current batch changed, not just describe one snapshot |
+| Validation layer | Harness checks and golden-case regression tests | Output quality is checked systematically instead of trusted by default |
+| Multi-surface delivery | API, HTML reports, SVG charts, dashboard, and optional Langflow entry | The same backend can serve engineering use, reporting, and demos |
+| Production shape | Auto-runner, webhook-ready alerts, Docker skeleton, CI test workflow | The project already behaves like something meant to leave the notebook stage |
 
 ## Quick Start
 
