@@ -1,10 +1,12 @@
 .venv/
 .tmp/
+.pytest_tmp/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .pytest_cache/
+.pytest_cache_local/
 
 data/reports/
 data/harness_failures/

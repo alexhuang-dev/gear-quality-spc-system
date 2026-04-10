@@ -4170,7 +4170,7 @@
                 "trace_as_metadata": true,
                 "track_in_telemetry": false,
                 "type": "str",
-                "value": "# Gear SPC Core v8 package wrapper.\n# The real implementation lives in: C:\\Users\\34309\\Documents\\New project\\gear_quality\nif r\"C:\\Users\\34309\\Documents\\New project\" not in sys.path:\n    sys.path.insert(0, r\"C:\\Users\\34309\\Documents\\New project\")\n\npipeline = importlib.import_module(\"gear_quality.pipeline\")\nresult = pipeline.run_langflow_payload(\n    input_text=globals().get(\"input_text\", \"\"),\n    input_files=globals().get(\"input_files\", []),\n    specs_json=globals().get(\"specs_json\", \"\"),\n    config_json=globals().get(\"config_json\", \"\"),\n)\nprint(json.dumps(result, ensure_ascii=False))\n"
+                "value": "# Gear SPC Core v8 package wrapper.\n# Legacy example kept for reference. Resolve the project root dynamically.\nfrom pathlib import Path\n\nproject_root = Path.cwd()\nif str(project_root) not in sys.path:\n    sys.path.insert(0, str(project_root))\n\npipeline = importlib.import_module(\"gear_quality.pipeline\")\nresult = pipeline.run_langflow_payload(\n    input_text=globals().get(\"input_text\", \"\"),\n    input_files=globals().get(\"input_files\", []),\n    specs_json=globals().get(\"specs_json\", \"\"),\n    config_json=globals().get(\"config_json\", \"\"),\n)\nprint(json.dumps(result, ensure_ascii=False))\n"
               },
               "specs_json": {
                 "_input_type": "MultilineInput",
@@ -4230,7 +4230,7 @@
                 "trace_as_metadata": true,
                 "track_in_telemetry": false,
                 "type": "str",
-                "value": "{\n  \"history_db_path\": \"C:\\\\Users\\\\34309\\\\Documents\\\\New project\\\\gear_quality_history.sqlite\",\n  \"output_dir\": \"C:\\\\Users\\\\34309\\\\Documents\\\\New project\\\\gear_quality_outputs\",\n  \"history_limit\": 8,\n  \"generate_artifacts\": true,\n  \"generate_pdf\": false,\n  \"western_electric_enabled\": true,\n  \"alert_cpk_threshold\": 1.0,\n  \"history_query_batch_key\": \"\",\n  \"send_alerts\": false,\n  \"alert_webhook_url\": \"\",\n  \"alert_webhook_type\": \"generic\",\n  \"langfuse_enabled\": false\n}"
+                "value": "{\n  \"history_db_path\": \"data/gear_quality_history_v8.sqlite\",\n  \"output_dir\": \"data/gear_quality_outputs_v8\",\n  \"history_limit\": 8,\n  \"generate_artifacts\": true,\n  \"generate_pdf\": false,\n  \"western_electric_enabled\": true,\n  \"alert_cpk_threshold\": 1.0,\n  \"history_query_batch_key\": \"\",\n  \"send_alerts\": false,\n  \"alert_webhook_url\": \"\",\n  \"alert_webhook_type\": \"generic\",\n  \"langfuse_enabled\": false\n}"
               }
             },
             "tool_mode": false
