@@ -1,109 +1,158 @@
 # Gear Quality SPC System
 
-![Python](https://img.shields.io/badge/Python-Production-blue)
-![FastAPI](https://img.shields.io/badge/API-FastAPI-009688)
-![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-black)
-![Status](https://img.shields.io/badge/Status-v1.0.0-success)
+[![Tests](https://github.com/alexhuang-dev/gear-quality-spc-system/actions/workflows/tests.yml/badge.svg)](https://github.com/alexhuang-dev/gear-quality-spc-system/actions/workflows/tests.yml)
+![Version](https://img.shields.io/badge/version-v1.0.0-2563eb)
+![Python](https://img.shields.io/badge/python-3.11%2B-3776ab)
 
 [中文说明](README.zh-CN.md)
 
-Gear Quality SPC System started from a simple engineering constraint: in quality analysis, some parts of the pipeline can be expressive, but the numbers cannot be negotiable.
+Gear Quality SPC System is a production-oriented backend for gear inspection quality analysis. It takes CSV measurement data, computes SPC results deterministically, compares them with historical runs, generates reports and charts, and validates the final output with a harness layer before you trust it.
 
-That decision shaped the whole project. SPC metrics, control limits, historical comparisons, and release checks are computed by deterministic Python code. The presentation layer can still be conversational, but it is not allowed to become the source of truth. I kept Langflow in the project because it is useful for demos and workflow presentation, but I pushed it out of the critical path. The production backbone is a Python service stack.
-
-The result is a system that takes gear inspection CSV data, turns it into a repeatable SPC pipeline, compares it against historical runs, generates reports and charts, and then runs a harness layer over the final output to check that the story still matches the numbers.
+What makes it different from a generic "AI workflow" project is the boundary it draws: the numbers live in code, while language-facing layers sit on top. Langflow is supported as a visual entry, but the system is designed to run without it.
 
 ![Architecture Overview](docs/assets/architecture-overview.svg)
 
-## Design Decisions
+## Why You Might Care
 
-### 1. Deterministic core before language layer
+If you are trying to turn inspection spreadsheets into something closer to an engineering system, this project is the middle ground between a one-off script and a full factory platform. It gives you deterministic SPC computation, traceable history, machine-checkable validation, and deployable service interfaces in one place.
 
-I did not want quality conclusions to depend on prompt phrasing. For that reason, SPC calculation, Western Electric rules, historical comparison, and status grading all live in code under `core/`. The LLM-facing layer is allowed to explain results, not invent them.
+## Quick Start
 
-### 2. Langflow as interface, not dependency
+### Environment
 
-The project includes a final Langflow flow because it is good for demonstration and workflow visibility. But the production path is built around `FastAPI`, `LangGraph`, `SQLite`, and `Streamlit`. If Langflow disappeared tomorrow, the backend would still run.
+- Python `3.11+`
+- Windows PowerShell for the bundled scripts
+- or Docker if you prefer container startup
 
-### 3. Validation was part of the first version, not an afterthought
-
-I treated output consistency as a product requirement. The system includes a harness evaluation layer, golden-case regression tests, and a release process, because a report generator without a reliability story is not very interesting in an industrial setting.
-
-## What Is In The Repo
-
-```text
-core/                  SPC, history, charts, reports, alerts, harness logic
-graph/                 LangGraph orchestration with deterministic fallback
-api/                   FastAPI service layer
-harness/               golden-case regression helpers
-services/              background auto-runner
-dashboard/             Streamlit dashboard
-langflow_integration/  Langflow custom component
-tests/                 unit tests and regression fixtures
-data/specs/            default specification configuration
-```
-
-## Current Scope
-
-Today the system covers the software side of a production-style SPC workflow:
-
-- deterministic SPC computation
-- Western Electric 8-rule evaluation
-- SQLite-backed historical memory
-- report and chart generation
-- webhook-ready alert payloads
-- machine-checkable harness validation
-- dashboard visibility
-- optional Langflow presentation flow
-
-What it does not pretend to solve by itself is the factory integration work: real spec ownership, MES/ERP/PLC interfaces, and on-site data contracts still need to come from the actual environment.
-
-## Running The System
-
-### Local
+### Local startup
 
 ```powershell
+git clone https://github.com/alexhuang-dev/gear-quality-spc-system.git
+cd gear-quality-spc-system
 python -m venv .venv
 .\.venv\Scripts\python -m pip install -r requirements.txt
 powershell -ExecutionPolicy Bypass -File .\start_production_stack.ps1
 ```
 
-Open:
+After startup:
 
 - API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - Ready check: [http://127.0.0.1:8000/ready](http://127.0.0.1:8000/ready)
 - Dashboard: [http://127.0.0.1:8501](http://127.0.0.1:8501)
 
-### Docker
+### Docker startup
 
 ```bash
 cp .env.example .env
 docker compose -f docker-compose.production.yml up --build -d
 ```
 
-## Langflow Entry
+## How To Use It
 
-If you want the visual workflow version, use:
+### 1. Send a CSV to the API
+
+Example request:
+
+```powershell
+$body = @{
+  csv = @"
+batch_no,time,part_id,metric_a,metric_b,defect_count
+LOT001,2024-07-01 08:00,P001,12,4,0
+LOT001,2024-07-01 08:05,P002,13,5,0
+LOT001,2024-07-01 08:10,P003,14,6,1
+LOT001,2024-07-01 08:15,P004,15,5,0
+"@
+  specs = @{
+    metric_a = @{ USL = 20; LSL = 0 }
+    metric_b = @{ USL = 10; LSL = 0 }
+  }
+} | ConvertTo-Json -Depth 6
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8000/analyze `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+Example response shape:
+
+```json
+{
+  "spc_result": {
+    "run_id": "20260410090935_8b4fbe1a",
+    "batch_numbers": ["LOT001"],
+    "overall_min_cpk": 0.882,
+    "overall_status": "warning"
+  },
+  "harness_eval": {
+    "passed": true,
+    "score": 1.0
+  },
+  "report_paths": {
+    "html_report_path": "data/reports/report_20260410090935_8b4fbe1a.html"
+  }
+}
+```
+
+### 2. Drop CSV files into the watch directory
+
+If the auto-runner is enabled, place CSV files in:
+
+```text
+data/incoming/
+```
+
+Processed files move to:
+
+```text
+data/processed/
+```
+
+### 3. Use the visual flow if you want a demo layer
+
+Langflow is optional. If you want the showcase workflow:
 
 - `New Flow - v9.3 api-frontend-prompt-merge-friendly.json`
 - `langflow_integration/gear_spc_component.py`
 
-That flow calls the backend API. It is the front end, not the system boundary.
+## Project Structure
 
-## API Endpoints
+```text
+api/                   FastAPI service entrypoints
+core/                  SPC, history, charts, reports, alerts, harness logic
+graph/                 LangGraph orchestration and deterministic fallback
+harness/               golden-case helpers and regression support
+services/              auto-runner for incoming CSV files
+dashboard/             Streamlit dashboard
+langflow_integration/  Langflow custom component and setup notes
+tests/                 pytest coverage and golden fixtures
+data/specs/            default specification configuration
+```
 
-- `GET /health`
-- `GET /ready`
-- `GET /config/public`
-- `POST /analyze`
-- `POST /analyze-file`
-- `GET /history`
-- `GET /report/{run_id}`
-- `GET /dashboard/summary`
-- `POST /regression`
-- `POST /alerts/test`
+## Why It Is Designed This Way
+
+- Deterministic code owns SPC facts because those numbers need to stay stable across prompt changes.
+- Langflow is kept outside the critical path because it is useful for demos but not a good system boundary.
+- Harness validation is built into the project because report generation without consistency checks is not very convincing in an industrial setting.
+
+## Known Limitations
+
+- Default spec values are placeholders until replaced with real process standards.
+- The repository does not include MES, ERP, or PLC integration.
+- Alert delivery is webhook-ready, but real enterprise endpoints still need to be configured.
+- PDF generation depends on the target host having the right rendering dependencies.
+
+## Next Steps
+
+- add more realistic production datasets and regression fixtures
+- extend the dashboard from run summaries to operator-facing monitoring
+- connect the alert layer to real enterprise notification channels
+- expose the same backend through a cleaner LangGraph-native application boundary
 
 ## Testing
+
+Run the current test suite with:
 
 ```powershell
 .\.venv\Scripts\python -m pytest tests -q

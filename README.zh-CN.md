@@ -1,112 +1,158 @@
 # 齿轮质量 SPC 系统
 
-![Python](https://img.shields.io/badge/Python-Production-blue)
-![FastAPI](https://img.shields.io/badge/API-FastAPI-009688)
-![LangGraph](https://img.shields.io/badge/流程编排-LangGraph-black)
-![Status](https://img.shields.io/badge/状态-v1.0.0-success)
+[![Tests](https://github.com/alexhuang-dev/gear-quality-spc-system/actions/workflows/tests.yml/badge.svg)](https://github.com/alexhuang-dev/gear-quality-spc-system/actions/workflows/tests.yml)
+![Version](https://img.shields.io/badge/version-v1.0.0-2563eb)
+![Python](https://img.shields.io/badge/python-3.11%2B-3776ab)
 
 [English](README.md)
 
-这个项目最开始不是从“我要做一个多智能体系统”出发的，而是从一个很朴素的工程判断出发的：质量分析里有些部分可以写得灵活，但数字本身不能含糊。
+齿轮质量 SPC 系统是一套面向齿轮检测场景的质量分析后端。它把 CSV 检测数据接进来，做确定性的 SPC 计算，接上历史批次对比，生成报告和图表，并在最后用 harness 去校验输出有没有把数字说歪。
 
-所以我一开始就把边界划得很清楚。像 SPC 指标、控制限、历史批次差值、状态判断，这些必须由确定性的 Python 代码负责；表达层可以更自然，甚至可以接 Langflow 做演示，但它不能反过来定义事实。也正因为这样，这个项目最后长成了一套后端优先的质量分析系统，而不是一个围着提示词堆起来的工作流 demo。
-
-它现在做的事情很直接：把齿轮检测 CSV 数据接进来，跑一套可重复的 SPC 分析流程，接上历史记录，生成报告和图表，再用一层 harness 去检查最终输出有没有把数字说歪。
+它和常见“AI 工作流项目”的区别，不在于功能多一点，而在于边界划得更明确：数字和状态判断留在代码里，语言层放在上面。Langflow 可以接进来做展示，但系统不是靠 Langflow 才成立。
 
 ![Architecture Overview](docs/assets/architecture-overview.svg)
 
-## 设计判断
+## 这是什么，我为什么要关心
 
-### 1. 先把“不能错”的部分收回到代码里
+如果你面对的是一堆检测表格，想把它们从“人工看结果”往“工程化流程”推进一点，这个项目就是中间那一步。它不是完整工厂平台，但也不只是一次性脚本。它把确定性计算、历史记忆、结果校验、报告产物和服务接口收在了一套后端里。
 
-这个项目里最重要的决定，不是用了哪个框架，而是决定哪些事情绝不能交给语言模型。  
-因此 `core/` 里负责的是确定性部分：SPC 计算、Western Electric 判异、历史对比、状态分级、报告产物和校验逻辑。这样做的好处很简单：以后前端怎么换、提示词怎么改，关键数值都不会跟着漂。
+## 怎么跑起来
 
-### 2. 保留 Langflow，但把它放在合适的位置
+### 环境要求
 
-我没有把 Langflow 删掉，因为它对演示和工作流展示确实有价值。但我也没有让它成为系统核心。  
-这套系统真正的主链路是 `FastAPI + LangGraph + SQLite + Streamlit`。Langflow 只是一个入口，适合汇报、面试和业务演示，不应该承担事实裁决。
+- Python `3.11+`
+- Windows PowerShell（仓库里自带启动脚本）
+- 或者 Docker
 
-### 3. 校验不是最后补的，而是一开始就放进去的
-
-很多项目会先把流程跑通，再考虑稳定性。我的处理方式反过来一点：只要系统要生成质量结论，就必须有一套东西去检查“最后写出来的话”和“前面算出来的数”是不是一致。  
-所以这个仓库里从第一版开始就带着 harness、golden case 和回归测试。
-
-## 仓库结构
-
-```text
-core/                  SPC、历史、图表、报告、告警、harness 逻辑
-graph/                 LangGraph 编排层，带确定性回退
-api/                   FastAPI 服务层
-harness/               黄金样本与回归辅助
-services/              自动处理服务
-dashboard/             Streamlit 看板
-langflow_integration/  Langflow 自定义组件
-tests/                 单元测试与回归样本
-data/specs/            默认规格限配置
-```
-
-## 当前做到哪里
-
-现在这套系统已经把软件侧的主干搭完整了：
-
-- 确定性 SPC 计算
-- Western Electric 8 条规则
-- SQLite 历史记忆
-- 报告和图表生成
-- webhook 告警载荷
-- harness 一致性校验
-- dashboard 展示
-- 可选 Langflow 工作流入口
-
-它目前没有假装解决的，是工厂现场那部分：真实规格限归属、MES/ERP/PLC 对接、以及产线数据契约。这些本来就不应该在一个通用仓库里硬写死。
-
-## 运行方式
-
-### 本地运行
+### 本地启动
 
 ```powershell
+git clone https://github.com/alexhuang-dev/gear-quality-spc-system.git
+cd gear-quality-spc-system
 python -m venv .venv
 .\.venv\Scripts\python -m pip install -r requirements.txt
 powershell -ExecutionPolicy Bypass -File .\start_production_stack.ps1
 ```
 
-启动后可访问：
+启动后可以访问：
 
 - API 文档：[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - 就绪检查：[http://127.0.0.1:8000/ready](http://127.0.0.1:8000/ready)
 - Dashboard：[http://127.0.0.1:8501](http://127.0.0.1:8501)
 
-### Docker
+### Docker 启动
 
 ```bash
 cp .env.example .env
 docker compose -f docker-compose.production.yml up --build -d
 ```
 
-## Langflow 入口
+## 怎么用
 
-如果要看可视化工作流版本，用这两个文件：
+### 1. 把 CSV 发给 API
+
+示例请求：
+
+```powershell
+$body = @{
+  csv = @"
+batch_no,time,part_id,metric_a,metric_b,defect_count
+LOT001,2024-07-01 08:00,P001,12,4,0
+LOT001,2024-07-01 08:05,P002,13,5,0
+LOT001,2024-07-01 08:10,P003,14,6,1
+LOT001,2024-07-01 08:15,P004,15,5,0
+"@
+  specs = @{
+    metric_a = @{ USL = 20; LSL = 0 }
+    metric_b = @{ USL = 10; LSL = 0 }
+  }
+} | ConvertTo-Json -Depth 6
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8000/analyze `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+返回结果大致长这样：
+
+```json
+{
+  "spc_result": {
+    "run_id": "20260410090935_8b4fbe1a",
+    "batch_numbers": ["LOT001"],
+    "overall_min_cpk": 0.882,
+    "overall_status": "warning"
+  },
+  "harness_eval": {
+    "passed": true,
+    "score": 1.0
+  },
+  "report_paths": {
+    "html_report_path": "data/reports/report_20260410090935_8b4fbe1a.html"
+  }
+}
+```
+
+### 2. 直接丢文件到监听目录
+
+如果 auto-runner 在运行，把 CSV 放到：
+
+```text
+data/incoming/
+```
+
+处理完成后会移到：
+
+```text
+data/processed/
+```
+
+### 3. 需要演示工作流时再接 Langflow
+
+如果你想用可视化工作流入口：
 
 - `New Flow - v9.3 api-frontend-prompt-merge-friendly.json`
 - `langflow_integration/gear_spc_component.py`
 
-它调用的是后端 API。也就是说，Langflow 是前台，不是地基。
+## 项目结构是什么
 
-## 接口
+```text
+api/                   FastAPI 服务入口
+core/                  SPC、历史、图表、报告、告警、harness 逻辑
+graph/                 LangGraph 编排层和确定性回退
+harness/               黄金样本与回归辅助
+services/              自动处理服务
+dashboard/             Streamlit 看板
+langflow_integration/  Langflow 自定义组件和接入说明
+tests/                 pytest 测试和黄金样本
+data/specs/            默认规格限配置
+```
 
-- `GET /health`
-- `GET /ready`
-- `GET /config/public`
-- `POST /analyze`
-- `POST /analyze-file`
-- `GET /history`
-- `GET /report/{run_id}`
-- `GET /dashboard/summary`
-- `POST /regression`
-- `POST /alerts/test`
+## 为什么这样设计
+
+- 确定性的质量事实留在代码里，因为这些东西不能跟着提示词飘。
+- Langflow 放在系统边缘，因为它适合演示，不适合当事实边界。
+- harness 从一开始就放进来，因为能生成报告不代表结果可信，可信度要靠校验层。
+
+## 已知限制
+
+- 默认规格限只是占位值，真正使用前要替换成现场标准。
+- 仓库本身不包含 MES、ERP、PLC 的对接逻辑。
+- 告警层已经能生成 webhook 载荷，但真实企业地址需要现场配置。
+- PDF 生成功能依赖目标机器上的渲染环境。
+
+## 下一步计划
+
+- 补更多更接近生产的测试数据和回归样本
+- 把 dashboard 从结果展示再往监控方向推进
+- 把告警层接到真实企业通知通道
+- 把后端进一步整理成更清晰的 LangGraph 原生应用边界
 
 ## 测试
+
+运行测试：
 
 ```powershell
 .\.venv\Scripts\python -m pytest tests -q
