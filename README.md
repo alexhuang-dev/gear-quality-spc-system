@@ -3,101 +3,62 @@
 ![Python](https://img.shields.io/badge/Python-Production-blue)
 ![FastAPI](https://img.shields.io/badge/API-FastAPI-009688)
 ![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-black)
-![Langflow Optional](https://img.shields.io/badge/Langflow-Optional-orange)
-![Status](https://img.shields.io/badge/Status-Private%20Production--Style-success)
+![Status](https://img.shields.io/badge/Status-v1.0.0-success)
 
 [中文说明](README.zh-CN.md)
 
-A production-oriented gear quality analysis system for industrial SPC workflows, built with deterministic Python computation, LangGraph orchestration, FastAPI services, machine-checkable harness evaluation, reporting, and an optional Langflow presentation layer.
+Gear Quality SPC System started from a simple engineering constraint: in quality analysis, some parts of the pipeline can be expressive, but the numbers cannot be negotiable.
+
+That decision shaped the whole project. SPC metrics, control limits, historical comparisons, and release checks are computed by deterministic Python code. The presentation layer can still be conversational, but it is not allowed to become the source of truth. I kept Langflow in the project because it is useful for demos and workflow presentation, but I pushed it out of the critical path. The production backbone is a Python service stack.
+
+The result is a system that takes gear inspection CSV data, turns it into a repeatable SPC pipeline, compares it against historical runs, generates reports and charts, and then runs a harness layer over the final output to check that the story still matches the numbers.
 
 ![Architecture Overview](docs/assets/architecture-overview.svg)
 
-## Why This Project Stands Out
+## Design Decisions
 
-- It does not let LLMs invent core quality numbers
-- It separates deterministic computation from narrative explanation
-- It keeps Langflow as an optional showcase layer instead of a hard dependency
-- It includes harness validation, historical memory, charts, reports, and alert plumbing in one system
-- It is structured like a deployable engineering system, not a single demo notebook
+### 1. Deterministic core before language layer
 
-## One-Line Pitch
+I did not want quality conclusions to depend on prompt phrasing. For that reason, SPC calculation, Western Electric rules, historical comparison, and status grading all live in code under `core/`. The LLM-facing layer is allowed to explain results, not invent them.
 
-An industrial-grade gear quality analysis system that turns raw inspection CSVs into deterministic SPC results, historical comparisons, validated reports, and operational outputs.
+### 2. Langflow as interface, not dependency
 
-## Overview
+The project includes a final Langflow flow because it is good for demonstration and workflow visibility. But the production path is built around `FastAPI`, `LangGraph`, `SQLite`, and `Streamlit`. If Langflow disappeared tomorrow, the backend would still run.
 
-This project is designed to make gear inspection data operational instead of static. It takes CSV-based inspection results, computes SPC metrics deterministically, compares runs against historical batches, generates reports and charts, and produces a harness evaluation layer that checks whether the final output is internally consistent.
+### 3. Validation was part of the first version, not an afterthought
 
-The core production path is **pure Python**:
+I treated output consistency as a product requirement. The system includes a harness evaluation layer, golden-case regression tests, and a release process, because a report generator without a reliability story is not very interesting in an industrial setting.
 
-- `FastAPI` for service exposure
-- `LangGraph` for orchestration, with deterministic fallback
-- `SQLite` for history persistence
-- `Streamlit` for dashboard visibility
-- `pytest` + golden cases for regression checks
-
-`Langflow` is **optional**. It is included as a visual presentation and demo entry, not as the system of record.
-
-## What This Project Does
-
-- Parses gear inspection CSV data
-- Computes SPC metrics deterministically
-- Evaluates Western Electric 8 rules
-- Persists run history in SQLite
-- Compares current batches against previous runs
-- Generates JSON, HTML, SVG, and optional PDF outputs
-- Produces machine-checkable harness evaluation results
-- Builds alert payloads for webhook delivery
-- Exposes a backend API for Langflow or other clients
-- Provides a Streamlit dashboard for operational visibility
-- Supports automatic folder-based CSV ingestion
-
-## Architecture
+## What Is In The Repo
 
 ```text
-core/                  deterministic SPC, history, charts, reports, alerts, harness
+core/                  SPC, history, charts, reports, alerts, harness logic
 graph/                 LangGraph orchestration with deterministic fallback
 api/                   FastAPI service layer
 harness/               golden-case regression helpers
 services/              background auto-runner
-dashboard/             Streamlit operational dashboard
+dashboard/             Streamlit dashboard
 langflow_integration/  Langflow custom component
-tests/                 unit tests and golden-case regression tests
+tests/                 unit tests and regression fixtures
 data/specs/            default specification configuration
 ```
 
-## Runtime Modes
+## Current Scope
 
-### 1. Pure Python Production Mode
+Today the system covers the software side of a production-style SPC workflow:
 
-Use the backend directly through FastAPI, the dashboard, and the auto-runner.
+- deterministic SPC computation
+- Western Electric 8-rule evaluation
+- SQLite-backed historical memory
+- report and chart generation
+- webhook-ready alert payloads
+- machine-checkable harness validation
+- dashboard visibility
+- optional Langflow presentation flow
 
-This is the recommended deployment mode for real engineering use.
+What it does not pretend to solve by itself is the factory integration work: real spec ownership, MES/ERP/PLC interfaces, and on-site data contracts still need to come from the actual environment.
 
-### 2. Langflow Showcase Mode
-
-Use:
-
-- `New Flow - v9.3 api-frontend-prompt-merge-friendly.json`
-- `langflow_integration/gear_spc_component.py`
-
-In this mode, Langflow is the presentation layer. The backend API remains the source of truth.
-
-## Main Features
-
-- Deterministic SPC engine
-- Historical comparison across runs
-- Western Electric rule analysis
-- Harness validation with regression endpoint
-- HTML report with embedded charts and plain-language summary
-- Optional PDF generation
-- Alert payload generation and webhook testing
-- Dashboard summary endpoint
-- Incoming CSV watcher
-- Docker deployment skeleton
-- Windows startup scripts
-
-## Quick Start
+## Running The System
 
 ### Local
 
@@ -120,6 +81,15 @@ cp .env.example .env
 docker compose -f docker-compose.production.yml up --build -d
 ```
 
+## Langflow Entry
+
+If you want the visual workflow version, use:
+
+- `New Flow - v9.3 api-frontend-prompt-merge-friendly.json`
+- `langflow_integration/gear_spc_component.py`
+
+That flow calls the backend API. It is the front end, not the system boundary.
+
 ## API Endpoints
 
 - `GET /health`
@@ -139,33 +109,10 @@ docker compose -f docker-compose.production.yml up --build -d
 .\.venv\Scripts\python -m pytest tests -q
 ```
 
-## FAQ
-
-### Is this a pure Python system?
-
-Yes for the production backend.
-
-The core system can run without Langflow. The production stack is Python-based and includes FastAPI, LangGraph, SQLite, Streamlit, and the harness/test layer.
-
-### Does it require Langflow?
-
-No.
-
-Langflow is optional and mainly useful for demos, workflows, and visual presentation. If Langflow is removed, the backend still works.
-
-### Is it ready for a real factory?
-
-The software architecture is production-oriented, but actual deployment still depends on:
-
-- Real specification limits
-- Real webhook configuration
-- Real MES/ERP/PLC integration requirements
-
 ## Additional Docs
 
 - `PRODUCTION_DEPLOYMENT.md`
 - `FINAL_ARCHITECTURE.md`
-- `langflow_integration/SETUP.md`
 - `PROJECT_INTRO_BILINGUAL.md`
 - `INTERVIEW_GUIDE.zh-CN.md`
 - `SHOWCASE.md`
