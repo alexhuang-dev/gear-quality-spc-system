@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <rect width="1280" height="760" fill="#f8fafc"/>
+  <text x="60" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">
+    Gear Quality SPC System
+  </text>
+  <text x="60" y="95" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#475569">
+    Production-oriented architecture with deterministic computation, orchestration, validation, reporting, and optional Langflow presentation
+  </text>
+
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect x="60" y="150" width="220" height="96" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="86" y="186" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1d4ed8">Input Layer</text>
+  <text x="86" y="214" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">CSV text / CSV file</text>
+  <text x="86" y="236" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">Spec overrides / runtime config</text>
+
+  <rect x="340" y="130" width="320" height="140" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="366" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#166534">Deterministic Core</text>
+  <text x="366" y="200" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">CSV parsing</text>
+  <text x="366" y="224" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">SPC metrics / Cp / Cpk / limits</text>
+  <text x="366" y="248" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">Western Electric rules</text>
+
+  <rect x="720" y="130" width="240" height="140" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="746" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#b45309">LangGraph</text>
+  <text x="746" y="200" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">History attach</text>
+  <text x="746" y="224" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">Alert attach</text>
+  <text x="746" y="248" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">Artifacts / harness / persistence</text>
+
+  <rect x="1020" y="130" width="200" height="140" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="1046" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#6d28d9">FastAPI</text>
+  <text x="1046" y="200" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">/analyze</text>
+  <text x="1046" y="224" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">/history /report /ready</text>
+  <text x="1046" y="248" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#1e293b">/dashboard /regression</text>
+
+  <rect x="120" y="360" width="240" height="120" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="146" y="400" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a">SQLite History</text>
+  <text x="146" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Cross-run persistence</text>
+  <text x="146" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Historical comparison</text>
+
+  <rect x="400" y="360" width="240" height="120" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="426" y="400" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a">Harness Eval</text>
+  <text x="426" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Consistency checks</text>
+  <text x="426" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Golden-case regression</text>
+
+  <rect x="680" y="360" width="240" height="120" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="706" y="400" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a">Reports & Charts</text>
+  <text x="706" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">JSON / HTML / SVG / PDF</text>
+  <text x="706" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Plain-language summary</text>
+
+  <rect x="960" y="360" width="220" height="120" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="986" y="400" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a">Alerts</text>
+  <text x="986" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Webhook payloads</text>
+  <text x="986" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">WeCom / Feishu / generic</text>
+
+  <rect x="220" y="560" width="280" height="120" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="248" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#c2410c">Optional Langflow</text>
+  <text x="248" y="628" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Visual workflow / demo layer</text>
+  <text x="248" y="650" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Calls backend API only</text>
+
+  <rect x="620" y="560" width="280" height="120" rx="8" fill="#eff6ff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="648" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#0369a1">Streamlit Dashboard</text>
+  <text x="648" y="628" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Operational visibility</text>
+  <text x="648" y="650" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#334155">Recent runs / trends / alerts</text>
+
+  <line x1="280" y1="198" x2="340" y2="198" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="660" y1="198" x2="720" y2="198" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="960" y1="198" x2="1020" y2="198" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <line x1="840" y1="270" x2="840" y2="340" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="520" y1="270" x2="520" y2="340" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="760" y1="270" x2="760" y2="340" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="1070" y1="270" x2="1070" y2="340" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="520" y1="480" x2="520" y2="520" stroke="#64748b" stroke-width="3"/>
+  <line x1="520" y1="520" x2="360" y2="520" stroke="#64748b" stroke-width="3"/>
+  <line x1="360" y1="520" x2="360" y2="560" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <line x1="800" y1="480" x2="800" y2="560" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <text x="60" y="730" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#64748b">
+    Principle: Deterministic facts are computed by code; language layers explain but do not own the truth.
+  </text>
+</svg>

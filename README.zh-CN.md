@@ -10,6 +10,8 @@
 
 这是一个面向生产场景的齿轮质量分析系统，用来把齿轮检测 CSV 数据真正变成可运行、可追踪、可验证的质量分析流程。系统核心基于**确定性 Python 计算**，外层结合 `LangGraph` 编排、`FastAPI` 服务、`Harness` 机器校验、图表报告，以及可选的 `Langflow` 展示入口。
 
+![Architecture Overview](docs/assets/architecture-overview.svg)
+
 ## 这个项目厉害在哪
 
 - 它没有把关键质量数值交给大模型“猜”
@@ -173,3 +175,4 @@ docker compose -f docker-compose.production.yml up --build -d
 - `langflow_integration/SETUP.md`
 - `PROJECT_INTRO_BILINGUAL.md`
 - `INTERVIEW_GUIDE.zh-CN.md`
+- `SHOWCASE.md`

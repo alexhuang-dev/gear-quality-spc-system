@@ -10,6 +10,8 @@
 
 A production-oriented gear quality analysis system for industrial SPC workflows, built with deterministic Python computation, LangGraph orchestration, FastAPI services, machine-checkable harness evaluation, reporting, and an optional Langflow presentation layer.
 
+![Architecture Overview](docs/assets/architecture-overview.svg)
+
 ## Why This Project Stands Out
 
 - It does not let LLMs invent core quality numbers
@@ -166,3 +168,4 @@ The software architecture is production-oriented, but actual deployment still de
 - `langflow_integration/SETUP.md`
 - `PROJECT_INTRO_BILINGUAL.md`
 - `INTERVIEW_GUIDE.zh-CN.md`
+- `SHOWCASE.md`
