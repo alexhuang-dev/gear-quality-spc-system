@@ -1,7 +1,7 @@
 # 齿轮质量 SPC 系统
 
 [![Tests](https://github.com/alexhuang-dev/gear-quality-spc-system/actions/workflows/tests.yml/badge.svg)](https://github.com/alexhuang-dev/gear-quality-spc-system/actions/workflows/tests.yml)
-![Version](https://img.shields.io/badge/version-v1.0.0-2563eb)
+![Version](https://img.shields.io/badge/version-v1.0.1-2563eb)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776ab)
 [![License](https://img.shields.io/badge/license-Apache--2.0-orange)](LICENSE)
 
