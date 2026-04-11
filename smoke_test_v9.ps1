@@ -3,11 +3,18 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $python = Join-Path $root ".venv\Scripts\python.exe"
 
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = $utf8
+$OutputEncoding = $utf8
+
 @'
 import json
+import sys
 from pathlib import Path
 
 import requests
+
+sys.stdout.reconfigure(encoding="utf-8")
 
 case = json.loads((Path("tests") / "golden" / "case_002_warning.json").read_text(encoding="utf-8"))
 body = {

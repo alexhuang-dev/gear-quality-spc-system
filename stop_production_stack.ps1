@@ -30,11 +30,21 @@ if (-not $targets) {
 }
 
 foreach ($target in $targets) {
+    $existing = Get-Process -Id $target.ProcessId -ErrorAction SilentlyContinue
+    if (-not $existing) {
+        Write-Output ("Already stopped PID={0}" -f $target.ProcessId)
+        continue
+    }
+
     try {
         Stop-Process -Id $target.ProcessId -Force -ErrorAction Stop
         Write-Output ("Stopped PID={0}" -f $target.ProcessId)
     }
     catch {
+        if ($_.Exception.Message -like "*Cannot find a process with the process identifier*") {
+            Write-Output ("Already stopped PID={0}" -f $target.ProcessId)
+            continue
+        }
         Write-Output ("Failed to stop PID={0}: {1}" -f $target.ProcessId, $_.Exception.Message)
     }
 }
