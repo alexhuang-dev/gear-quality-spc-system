@@ -7,6 +7,8 @@ __pycache__/
 *.pyd
 .pytest_cache/
 .pytest_cache_local/
+pytest_tmp/
+pytest_cache/
 
 data/reports/
 data/harness_failures/
